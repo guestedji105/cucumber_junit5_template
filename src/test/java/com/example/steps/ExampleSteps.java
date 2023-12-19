@@ -7,13 +7,13 @@ import com.example.pages.MainPage;
 import com.example.utils.ConfigurationReader;
 import com.example.utils.DriverFactory;
 import io.cucumber.java.*;
-import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.qameta.allure.Allure;
-import org.apache.commons.logging.Log;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -40,11 +40,19 @@ public class ExampleSteps {
     }
 
     @After
-    public void afterMethod() {
+    public void afterMethod(Scenario scenario) {
+        if (scenario.isFailed()) {
+            TakesScreenshot ts = (TakesScreenshot) context.driver;
+
+            byte[] src = ts.getScreenshotAs(OutputType.BYTES);
+            scenario.attach(src, "image/png", "screenshot");
+        }
+
         Allure.addAttachment("Console log: ", String.valueOf(logs));
         if (context.driver != null) {
             context.driver.quit();
         }
+
     }
 
     @BeforeStep
@@ -63,6 +71,7 @@ public class ExampleSteps {
         lp.usernameInput.sendKeys(ConfigurationReader.get("standard_login"));
         lp.passwordInput.sendKeys(ConfigurationReader.get("password"));
     }
+
     @When("clicks login button")
     public void clicks_login_button() {
         LoginPage lp = new LoginPage(context);
@@ -85,6 +94,7 @@ public class ExampleSteps {
         MainPage mp = new MainPage(context);
         assertTrue(mp.firstDescriptionContainer.isDisplayed());
     }
+
     @Then("it have text in footer {string}")
     public void it_have_text_in_footer(String expectedText) {
         MainPage mp = new MainPage(context);
@@ -104,7 +114,7 @@ public class ExampleSteps {
     @Given("the following books")
     public void theFollowingBooks(List<Book> books) {
 
-        for(Book book: books) {
+        for (Book book : books) {
             System.out.printf(
                     "'%s', published in %d, was written by %s\n",
                     book.title,
