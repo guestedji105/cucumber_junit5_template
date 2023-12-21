@@ -50,11 +50,6 @@ public class ExampleSteps {
         }
     }
 
-    @BeforeStep
-    public void beforeEveryStep() {
-        scenario.log("Current URL: " + context.driver.getCurrentUrl());
-    }
-
     @Given("user enter login page")
     public void user_enter_login_page() {
         scenario.log("Entered login page");
