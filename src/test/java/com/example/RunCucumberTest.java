@@ -9,9 +9,7 @@ import static io.cucumber.junit.platform.engine.Constants.PLUGIN_PROPERTY_NAME;
 @IncludeEngines("cucumber")
 @SelectClasspathResource("com.example")
 @ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "com.example")
-@ConfigurationParameter(key = PLUGIN_PROPERTY_NAME,
-        value = "pretty, json:target/cucumber-reports/report.json," +
-                "html:target/cucumber-reports/index.html")
+@ConfigurationParameter(key = PLUGIN_PROPERTY_NAME, value = "me.jvt.cucumber.report.PrettyReports:target/cucumber")
 @ExcludeTags("ignored")
 public class RunCucumberTest {
 }
