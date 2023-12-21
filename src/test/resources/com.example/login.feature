@@ -1,3 +1,4 @@
+@top-level
 Feature: Login Functionality
 
   @positive

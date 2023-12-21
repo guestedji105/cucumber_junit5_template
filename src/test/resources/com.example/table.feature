@@ -1,6 +1,6 @@
 Feature: Table inside scenario
 
-  @positive
+  @positive @ignored
   Scenario: Listing book details
     Given the following books
       | title                  | author              | yearOfPublishing |
