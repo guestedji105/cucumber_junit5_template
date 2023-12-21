@@ -10,33 +10,31 @@ import io.cucumber.java.*;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import io.qameta.allure.Allure;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDate;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ExampleSteps {
     TestContext context;
-    StringBuilder logs;
+
+    Scenario scenario;
 
     @Before
-    public void beforeMethod() {
+    public void beforeMethod(Scenario scenario) {
         context = new TestContext();
         context.driver = DriverFactory.get();
         context.wait = new WebDriverWait(context.driver, Duration.ofSeconds(Long.parseLong(ConfigurationReader.get("timeout"))));
         context.actions = new Actions(context.driver);
         context.js = (JavascriptExecutor) context.driver;
         context.driver.get(ConfigurationReader.get("base_url"));
-        logs = new StringBuilder();
+        this.scenario = scenario;
     }
 
     @After
@@ -47,22 +45,19 @@ public class ExampleSteps {
             byte[] src = ts.getScreenshotAs(OutputType.BYTES);
             scenario.attach(src, "image/png", "screenshot");
         }
-
-        Allure.addAttachment("Console log: ", String.valueOf(logs));
         if (context.driver != null) {
             context.driver.quit();
         }
-
     }
 
     @BeforeStep
     public void beforeEveryStep() {
-        logs.append(context.driver.getCurrentUrl());
+        scenario.log("Current URL: " + context.driver.getCurrentUrl());
     }
 
     @Given("user enter login page")
     public void user_enter_login_page() {
-        logs.append("Entered login page");
+        scenario.log("Entered login page");
     }
 
     @When("user enters valid credentials")
@@ -81,7 +76,7 @@ public class ExampleSteps {
     @When("user adds first product to the cart")
     public void user_adds_first_product_to_the_cart() {
         MainPage mp = new MainPage(context);
-        mp.addToCartButtons.get(0).click();
+        mp.addToCartButtons.getFirst().click();
     }
 
     @Then("amount of products in the cart is {int}")
@@ -134,8 +129,34 @@ public class ExampleSteps {
     @Then("error message contains text {string}")
     public void errorMessageContainsText(String expectedErrorMessage) {
         String actualText = new LoginPage(context).loginMessageContainer.getText();
-        logs.append(String.format("actualText: %s", actualText));
-        logs.append(String.format("expectedText: %s", expectedErrorMessage));
+        scenario.log(String.format("expectedText: %s;\r\nactualText: %s", expectedErrorMessage, actualText));
         assertTrue(actualText.contains(expectedErrorMessage));
+    }
+
+    @Given("^the following table$")
+    public void theFollowingTable(Map<String, String> dataTable) {
+        dataTable = processDataTable(dataTable);
+        scenario.log(dataTable.toString());
+    }
+
+    public Map<String, String> processDataTable(Map<String, String> dataTable) {
+        Map<String, String> processedData = new LinkedHashMap<>();
+        for (Map.Entry<String, String> entry : dataTable.entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue();
+            processedData.put(key, processPlaceholder(value));
+        }
+        return processedData;
+    }
+
+    private String processPlaceholder(String placeholder) {
+        return switch (placeholder.toLowerCase()) {
+            case "today" -> LocalDate.now().toString();
+            case "randomnumber" -> String.valueOf(new Random().nextInt(1,100));
+            case "emptystring" -> "";
+            case "null" -> null;
+            case "textofelement" -> context.driver.findElement(By.className("login_logo")).getText();
+            default -> placeholder;
+        };
     }
 }
