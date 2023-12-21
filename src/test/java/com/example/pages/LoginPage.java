@@ -1,6 +1,5 @@
 package com.example.pages;
 
-import com.example.context.TestContext;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
@@ -17,7 +16,5 @@ public class LoginPage extends BasePage {
     @FindBy(css = "#login-button")
     public WebElement loginButton;
 
-    public LoginPage(TestContext context){
-        super(context);
-    }
+    public LoginPage() {}
 }

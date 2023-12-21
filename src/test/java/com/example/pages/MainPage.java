@@ -1,5 +1,5 @@
 package com.example.pages;
-import com.example.context.TestContext;
+
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
@@ -12,7 +12,5 @@ public class MainPage extends InternalPage {
     @FindBy(css = ".inventory_item_desc")
     public WebElement firstDescriptionContainer;
 
-    public MainPage(TestContext context) {
-        super(context);
-    }
+    public MainPage() {}
 }
