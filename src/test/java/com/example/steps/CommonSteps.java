@@ -9,12 +9,6 @@ import static com.example.context.Context.*;
 import static com.example.utils.DataProcessing.processDataTable;
 
 public class CommonSteps {
-
-    @BeforeStep
-    public void beforeEveryStep() {
-        scenario.log("Current URL: " + getDriver().getCurrentUrl());
-    }
-
     @Given("user enter login page")
     public void user_enter_login_page() {
         scenario.log("Entered login page");
