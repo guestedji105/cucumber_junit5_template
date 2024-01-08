@@ -79,6 +79,19 @@ public class ExampleSteps {
         mp.addToCartButtons.getFirst().click();
     }
 
+    @When("user adds first and last products to the cart")
+    public void user_adds_first_and_last_products_to_the_cart() {
+        MainPage mp = new MainPage(context);
+        mp.addToCartButtons.getFirst().click();
+        mp.addToCartButtons.getLast().click();
+    }
+
+    @When("user adds all products to the cart")
+    public void user_adds_all_products_to_the_cart() {
+        MainPage mp = new MainPage(context);
+        mp.addToCartButtons.forEach(WebElement::click);
+    }
+
     @Then("amount of products in the cart is {int}")
     public void amount_of_products_in_the_cart_is(Integer amount) {
         assertEquals(Integer.parseInt(new MainPage(context).shoppingCartLink.getText()), amount);

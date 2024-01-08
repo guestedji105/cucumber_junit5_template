@@ -7,7 +7,7 @@ Feature: Login Functionality
     When user enters valid credentials
     And clicks login button
     Then main page opens
-    And it have text in footer "2023 Sauce Labs. All Rights Reserved."
+    And it have text in footer "2024 Sauce Labs. All Rights Reserved."
 
   @negative
   Scenario Outline: Negative login scenarios
