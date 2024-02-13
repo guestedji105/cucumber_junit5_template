@@ -14,6 +14,8 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.*;
@@ -27,9 +29,9 @@ public class ExampleSteps {
     Scenario scenario;
 
     @Before
-    public void beforeMethod(Scenario scenario) {
+    public void beforeMethod(Scenario scenario) throws MalformedURLException, URISyntaxException {
         context = new TestContext();
-        context.driver = DriverFactory.get();
+        context.driver = DriverFactory.get(scenario);
         context.wait = new WebDriverWait(context.driver, Duration.ofSeconds(Long.parseLong(ConfigurationReader.get("timeout"))));
         context.actions = new Actions(context.driver);
         context.js = (JavascriptExecutor) context.driver;
@@ -56,7 +58,7 @@ public class ExampleSteps {
     }
 
     @Given("user enter login page")
-    public void user_enter_login_page() {
+    public void user_enter_login_page() throws InterruptedException {
         scenario.log("Entered login page");
     }
 
